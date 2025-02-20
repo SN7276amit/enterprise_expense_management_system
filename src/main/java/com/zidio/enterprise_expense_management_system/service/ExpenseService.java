@@ -31,7 +31,7 @@ public class ExpenseService {
 	public ResponseEntity<ResponseStructure<List<Expense>>> viewPendingExpenses() {
 		List<Expense> list = expenseDao.viewPendingExpenses();
 		ResponseStructure<List<Expense>> responseStructure = new ResponseStructure<List<Expense>>();
-		if (list != null) {
+		if (!list.isEmpty()) {
 			responseStructure.setMessage("Pending Expenses Found");
 			responseStructure.setStatus(HttpStatus.FOUND.value());
 			responseStructure.setData(list);
@@ -90,6 +90,19 @@ public class ExpenseService {
 		} else {
 			throw new DataNotFoundException("Expense Not Found");
 		}
-		
+
+	}
+
+	public ResponseEntity<ResponseStructure<List<Expense>>> getExpensesAboveOneLakh() {
+		List<Expense> list = expenseDao.getExpensesAboveOneLakh();
+		ResponseStructure<List<Expense>> structure = new ResponseStructure<List<Expense>>();
+		if (!list.isEmpty()) {
+			structure.setMessage(" expenses retrieved successfully");
+			structure.setStatus(HttpStatus.OK.value());
+			structure.setData(list);
+			return new ResponseEntity<ResponseStructure<List<Expense>>>(structure, HttpStatus.OK);
+		} else {
+			throw new DataNotFoundException("Expenses not found");
+		}
 	}
 }

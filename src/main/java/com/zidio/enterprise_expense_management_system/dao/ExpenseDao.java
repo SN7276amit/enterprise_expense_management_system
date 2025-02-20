@@ -40,4 +40,8 @@ public class ExpenseDao {
 		return expense;
 	}
 
+	public List<Expense> getExpensesAboveOneLakh() {
+		return expenseRepo.findByAmountGreaterThan(100000);
+	}
+
 }

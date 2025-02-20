@@ -10,5 +10,4 @@ public class DataNotFoundException extends RuntimeException {
 	public String getMessage() {
 		return message;
 	}
-
 }

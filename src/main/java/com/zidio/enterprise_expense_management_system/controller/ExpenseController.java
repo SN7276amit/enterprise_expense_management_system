@@ -58,19 +58,27 @@ public class ExpenseController {
 	public ResponseEntity<ResponseStructure<Expense>> rejectExpense(@PathVariable int id) {
 		return expenseService.rejectExpense(id);
 	}
-	
-	 @Operation(summary = "Get All Expenses", description = "Allows admins to view all expenses.")
-	    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "All expenses retrieved successfully")})
-	    @GetMapping("/all")
-	    public ResponseEntity<ResponseStructure<List<Expense>>> getAllExpenses() {
-	        return expenseService.getAllExpenses();
-	    }
 
-	    @Operation(summary = "Delete Expense", description = "Allows admins to delete an expense by ID.")
-	    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Expense deleted successfully")})
-	    @DeleteMapping("/{id}")
-	    public ResponseEntity<ResponseStructure<Expense>> deleteExpense(@PathVariable int id) {
-	        return expenseService.deleteExpense(id);
-	    }
+	@Operation(summary = "Get All Expenses", description = "Allows admins to view all expenses.")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "All expenses retrieved successfully") })
+	@GetMapping("/all")
+	public ResponseEntity<ResponseStructure<List<Expense>>> getAllExpenses() {
+		return expenseService.getAllExpenses();
+	}
+
+	@Operation(summary = "Delete Expense", description = "Allows admins to delete an expense by ID.")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Expense deleted successfully") })
+	@DeleteMapping("/{id}")
+	public ResponseEntity<ResponseStructure<Expense>> deleteExpense(@PathVariable int id) {
+		return expenseService.deleteExpense(id);
+	}
+
+	@Operation(summary = "Get Expenses Above One Lakh", description = "Allows admins to View only Expenses Above One Lakh.")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Expenses retrieved successfully") })
+	@GetMapping("/aboveonelakh")
+	public ResponseEntity<ResponseStructure<List<Expense>>> getExpensesAboveOneLakh() {
+		return expenseService.getExpensesAboveOneLakh();
+
+	}
 
 }
