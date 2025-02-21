@@ -31,7 +31,7 @@ public class SecurityConfig {
 		return http.csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/admin/signup", "/admin/login", "/manager/signup", "/manager/login",
-								"/employee/signup", "/employee/login")
+								"/employee/signup", "/employee/login","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
 						.permitAll() 
 						.requestMatchers("/admin/**").hasAuthority("ADMIN") 
 						.requestMatchers("/manager/**").hasAuthority("MANAGER").requestMatchers("/employee/**")

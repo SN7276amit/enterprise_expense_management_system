@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.zidio.enterprise_expense_management_system.dao.ExpenseDao;
@@ -20,6 +22,9 @@ public class ExpenseService {
 
 	public ResponseEntity<ResponseStructure<Expense>> submitExpense(Expense expense) {
 		ResponseStructure<Expense> structure = new ResponseStructure<Expense>();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String employeeName = authentication.getName();
+		expense.setSubmittedBy(employeeName);
 		expense.setStatus("PENDING");
 		structure.setMessage("Expense submitted successfully");
 		structure.setStatus(HttpStatus.CREATED.value());
@@ -42,10 +47,12 @@ public class ExpenseService {
 		}
 	}
 
-	public ResponseEntity<ResponseStructure<Expense>> approveExpense(int id, String managerName) {
+	public ResponseEntity<ResponseStructure<Expense>> approveExpense(int id) {
 		Expense expense = expenseDao.findExpenseById(id);
 		ResponseStructure<Expense> structure = new ResponseStructure<Expense>();
 		if (expense != null) {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String managerName = authentication.getName();
 			expense.setStatus("APPROVED");
 			expense.setApprovedBy(managerName);
 			structure.setMessage("Expense Approved");

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zidio.enterprise_expense_management_system.dto.Expense;
@@ -31,6 +31,7 @@ public class ExpenseController {
 
 	@Operation(summary = "Submit Expense", description = "Allows employees to submit expenses for approval.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Expense submitted successfully") })
+	@PreAuthorize("hasAnyAuthority('EMPLOYEE')")
 	@PostMapping("/submit")
 	public ResponseEntity<ResponseStructure<Expense>> submitExpense(@RequestBody Expense expense) {
 		return expenseService.submitExpense(expense);
@@ -39,6 +40,7 @@ public class ExpenseController {
 	@Operation(summary = "View Pending Expenses", description = "Allows managers to view all pending expenses.")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Pending expenses retrieved successfully") })
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER',)")
 	@GetMapping("/pending")
 	public ResponseEntity<ResponseStructure<List<Expense>>> viewPendingExpenses() {
 		return expenseService.viewPendingExpenses();
@@ -46,14 +48,15 @@ public class ExpenseController {
 
 	@Operation(summary = "Approve Expense", description = "Allows managers to approve an expense.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Expense approved successfully") })
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER',)")
 	@PutMapping("/approve/{id}")
-	public ResponseEntity<ResponseStructure<Expense>> approveExpense(@PathVariable int id,
-			@RequestParam String managerName) {
-		return expenseService.approveExpense(id, managerName);
+	public ResponseEntity<ResponseStructure<Expense>> approveExpense(@PathVariable int id) {
+		return expenseService.approveExpense(id);
 	}
 
 	@Operation(summary = "Reject Expense", description = "Allows managers to reject an expense.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Expense rejected successfully") })
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER',)")
 	@PutMapping("/reject/{id}")
 	public ResponseEntity<ResponseStructure<Expense>> rejectExpense(@PathVariable int id) {
 		return expenseService.rejectExpense(id);
@@ -61,6 +64,7 @@ public class ExpenseController {
 
 	@Operation(summary = "Get All Expenses", description = "Allows admins to view all expenses.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "All expenses retrieved successfully") })
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER',)")
 	@GetMapping("/all")
 	public ResponseEntity<ResponseStructure<List<Expense>>> getAllExpenses() {
 		return expenseService.getAllExpenses();
@@ -68,6 +72,7 @@ public class ExpenseController {
 
 	@Operation(summary = "Delete Expense", description = "Allows admins to delete an expense by ID.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Expense deleted successfully") })
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER',)")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ResponseStructure<Expense>> deleteExpense(@PathVariable int id) {
 		return expenseService.deleteExpense(id);
@@ -75,6 +80,7 @@ public class ExpenseController {
 
 	@Operation(summary = "Get Expenses Above One Lakh", description = "Allows admins to View only Expenses Above One Lakh.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Expenses retrieved successfully") })
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER',)")
 	@GetMapping("/aboveonelakh")
 	public ResponseEntity<ResponseStructure<List<Expense>>> getExpensesAboveOneLakh() {
 		return expenseService.getExpensesAboveOneLakh();
