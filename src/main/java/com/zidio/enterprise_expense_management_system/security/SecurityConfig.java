@@ -1,5 +1,7 @@
 package com.zidio.enterprise_expense_management_system.security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 @Configuration
@@ -28,18 +33,29 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+		return http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/admin/signup", "/admin/login", "/manager/signup", "/manager/login",
-								"/employee/signup", "/employee/login","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
-						.permitAll() 
-						.requestMatchers("/admin/**").hasAuthority("ADMIN") 
-						.requestMatchers("/manager/**").hasAuthority("MANAGER").requestMatchers("/employee/**")
-						.hasAuthority("EMPLOYEE").anyRequest().authenticated() 
-				).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+								"/employee/signup", "/employee/login", "/v3/api-docs/**", "/swagger-ui/**",
+								"/swagger-ui.html")
+						.permitAll().requestMatchers("/admin/**").hasAuthority("ADMIN").requestMatchers("/manager/**")
+						.hasAuthority("MANAGER").requestMatchers("/employee/**").hasAuthority("EMPLOYEE").anyRequest()
+						.authenticated())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider())
-				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-				.build();
+				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		CorsConfiguration config = new CorsConfiguration();
+		config.setAllowedOrigins(List.of("http://localhost:3000")); // Update with your frontend URL
+		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		config.setAllowedHeaders(List.of("*"));
+		config.setAllowCredentials(true);
+		source.registerCorsConfiguration("/**", config);
+		return source;
 	}
 
 	@Bean

@@ -1,5 +1,6 @@
 package com.zidio.enterprise_expense_management_system.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.zidio.enterprise_expense_management_system.dao.ExpenseDao;
 import com.zidio.enterprise_expense_management_system.dto.Expense;
+import com.zidio.enterprise_expense_management_system.dto.ExpenseRequestDTO;
 import com.zidio.enterprise_expense_management_system.exception.DataNotFoundException;
 import com.zidio.enterprise_expense_management_system.util.ResponseStructure;
 
@@ -20,11 +22,16 @@ public class ExpenseService {
 	@Autowired
 	private ExpenseDao expenseDao;
 
-	public ResponseEntity<ResponseStructure<Expense>> submitExpense(Expense expense) {
+	public ResponseEntity<ResponseStructure<Expense>> submitExpense(ExpenseRequestDTO expenseRequestDTO) {
 		ResponseStructure<Expense> structure = new ResponseStructure<Expense>();
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String employeeName = authentication.getName();
+		Expense expense=new Expense();
+		expense.setDescription(expenseRequestDTO.getDescription());
+        expense.setAmount(expenseRequestDTO.getAmount());
+        expense.setCategory(expenseRequestDTO.getCategory());
 		expense.setSubmittedBy(employeeName);
+		expense.setDate(LocalDate.now());
 		expense.setStatus("PENDING");
 		structure.setMessage("Expense submitted successfully");
 		structure.setStatus(HttpStatus.CREATED.value());

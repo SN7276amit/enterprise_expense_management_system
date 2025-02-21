@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zidio.enterprise_expense_management_system.dto.Expense;
+import com.zidio.enterprise_expense_management_system.dto.ExpenseRequestDTO;
 import com.zidio.enterprise_expense_management_system.service.ExpenseService;
 import com.zidio.enterprise_expense_management_system.util.ResponseStructure;
 
@@ -33,8 +34,8 @@ public class ExpenseController {
 	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Expense submitted successfully") })
 	@PreAuthorize("hasAnyAuthority('EMPLOYEE')")
 	@PostMapping("/submit")
-	public ResponseEntity<ResponseStructure<Expense>> submitExpense(@RequestBody Expense expense) {
-		return expenseService.submitExpense(expense);
+	public ResponseEntity<ResponseStructure<Expense>> submitExpense(@RequestBody ExpenseRequestDTO expenseRequestDTO) {
+		return expenseService.submitExpense(expenseRequestDTO);
 	}
 
 	@Operation(summary = "View Pending Expenses", description = "Allows managers to view all pending expenses.")
