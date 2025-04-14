@@ -28,6 +28,7 @@ public class ManagerService {
 
 	public ResponseEntity<ResponseStructure<Manager>> saveManager(Manager manager) {
 		ResponseStructure<Manager> structure = new ResponseStructure<Manager>();
+		manager.setManagerPassword(passwordEncoder.encode(manager.getManagerPassword()));
 		structure.setMessage("Signup Success");
 		structure.setStatus(HttpStatus.CREATED.value());
 		structure.setData(managerDao.saveManager(manager));

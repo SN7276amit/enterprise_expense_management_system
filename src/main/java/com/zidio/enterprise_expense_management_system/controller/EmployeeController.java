@@ -29,9 +29,10 @@ public class EmployeeController {
 	@Operation(summary = "Employee Login", description = "This API is used to login an employee.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Login successful"),
 			@ApiResponse(responseCode = "401", description = "Invalid credentials") })
-	@GetMapping("/login")
-	public ResponseEntity<ResponseStructure<Employee>> loginEmployee(@RequestParam String email,
-			@RequestParam String password) {
+	@PostMapping("/login")
+	public ResponseEntity<ResponseStructure<Employee>> loginEmployee(@RequestBody Employee employee) {
+		String email=employee.getEmployeeEmail();
+		String password=employee.getEmployeePassword();
 		return employeeService.loginEmployee(email, password);
 	}
 }

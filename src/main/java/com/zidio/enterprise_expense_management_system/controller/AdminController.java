@@ -2,11 +2,9 @@ package com.zidio.enterprise_expense_management_system.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zidio.enterprise_expense_management_system.dto.Admin;
@@ -33,9 +31,10 @@ public class AdminController {
 	@Operation(summary = "Admin Login", description = "This API is used to login an Admin.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Login successful"),
 			@ApiResponse(responseCode = "401", description = "Invalid credentials") })
-	@GetMapping("/login")
-	public ResponseEntity<ResponseStructure<Admin>> loginAdmin(@RequestParam String email,
-			@RequestParam String password) {
+	@PostMapping("/login")
+	public ResponseEntity<ResponseStructure<Admin>> loginAdmin(@RequestBody Admin admin) {
+		String email=admin.getAdminEmail();
+		String password=admin.getAdminPassword();
 		return adminService.loginAdmin(email, password);
 	}
 }
